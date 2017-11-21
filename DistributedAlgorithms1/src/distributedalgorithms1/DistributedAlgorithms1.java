@@ -18,7 +18,7 @@ import java.util.List;
  * @author Thinkpad
  */
 public class DistributedAlgorithms1 {
-
+//Ciao
     
     public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException, InterruptedException {
 
