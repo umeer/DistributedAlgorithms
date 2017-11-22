@@ -21,32 +21,36 @@ public class DistributedAlgorithms1 {
 //Ciao
     
     public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException, InterruptedException {
-
+        
+        //Setting up RMI
         try {
             java.rmi.registry.LocateRegistry.createRegistry(1100);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         System.setProperty(("java.rmi.server.hostname"), "127.0.0.1");
-
-        Remote r1 = new Process();
-        Naming.rebind("rmi://localhost:1100/p1", r1);
-
-        Remote r2 = new Process();
-        Naming.rebind("rmi://localhost:1100/p1", r2);
-
-        Remote r3 = new Process();
-        Naming.rebind("rmi://localhost:1100/p1", r3);
-
-        ProcessInterface p1 = (ProcessInterface) Naming.lookup("rmi://localhost:1100/p1");
-        ProcessInterface p2 = (ProcessInterface) Naming.lookup("rmi://localhost:1100/p2");
-        ProcessInterface p3 = (ProcessInterface) Naming.lookup("rmi://localhost:1100/p3");
-
+        
+        
+        //Setting up network of process
+        Naming.rebind("rmi://localhost:1100/p1", new Process("p1"));
+        Naming.rebind("rmi://localhost:1100/p2", new Process("p2"));
+        Naming.rebind("rmi://localhost:1100/p3", new Process("p3"));
+        
         List<ProcessInterface> list = new ArrayList<ProcessInterface>();
-        list.add(p1);
-        list.add(p2);
-        list.add(p3);
-
-    }
-    
+        list.add((ProcessInterface) Naming.lookup("rmi://localhost:1100/p1"));
+        list.add((ProcessInterface) Naming.lookup("rmi://localhost:1100/p2"));
+        list.add((ProcessInterface) Naming.lookup("rmi://localhost:1100/p3"));
+        
+        for (ProcessInterface p : list) {
+            p.setNeighbor(list);
+        }
+        
+        
+        
+        //Start comunication
+        list.get(1).broadcast("Ciao");
+        list.get(2).broadcast("ciao2");
+        System.out.println(" main end");
+        
+    }  
 }
