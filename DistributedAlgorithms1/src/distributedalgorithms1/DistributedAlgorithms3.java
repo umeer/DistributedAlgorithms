@@ -27,7 +27,7 @@ public class DistributedAlgorithms3 {
 
         Naming.rebind("rmi://localhost:1103/p3", new Process(3));
 
-        System.out.printf("Process p3 ready ");
+        System.out.println("Process p3 ready ");
     }
 
 }

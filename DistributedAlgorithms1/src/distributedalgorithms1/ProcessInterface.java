@@ -10,9 +10,9 @@ import java.util.List;
  */
 public interface ProcessInterface extends Remote {
 
-    public void receviveMessage(String message, long timestamp) throws RemoteException;
+    public void receviveMessage(String message, int id_sender, int timestamp) throws RemoteException;
 
-    public void receviveAck(String message, long timestamp) throws RemoteException;
+    public void receviveAck(String message, int id_sender) throws RemoteException;
 
     public void setNeighbor(List<ProcessInterface> list) throws RemoteException;
 
@@ -23,7 +23,7 @@ public interface ProcessInterface extends Remote {
 
     public String getDeliveredMessage() throws RemoteException;
 
-    public int getAckNumber(String message)  throws RemoteException;
+    public int getAckNumber(String message) throws RemoteException;
 
     public void test() throws RemoteException;
 

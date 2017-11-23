@@ -30,7 +30,7 @@ public class DistributedAlgorithm2 {
 
         Naming.rebind("rmi://localhost:1102/p2", new Process(2));
 
-        System.out.printf("Process p2 ready ");
+        System.out.println("Process p2 ready ");
     }
 
 }

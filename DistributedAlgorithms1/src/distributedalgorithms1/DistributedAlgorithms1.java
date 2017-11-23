@@ -33,6 +33,10 @@ public class DistributedAlgorithms1 {
         Naming.rebind("rmi://localhost:1101/p1", new Process(1));
         //Naming.rebind("rmi://localhost:1100/p2", new Process("p2"));
         //Naming.rebind("rmi://localhost:1100/p3", new Process("p3"));
+        
+        
+        
+        
 
         List<ProcessInterface> processList = new ArrayList<ProcessInterface>();
         processList.add((ProcessInterface) Naming.lookup("rmi://localhost:1101/p1"));
@@ -44,7 +48,7 @@ public class DistributedAlgorithms1 {
         }
 
         //Start comunication
-        processList.get(1).broadcast("Ciao");
+        processList.get(0).broadcast("Ciao");
         //processList.get(2).broadcast("Ciao2");
         System.out.println(" main end ");
 
