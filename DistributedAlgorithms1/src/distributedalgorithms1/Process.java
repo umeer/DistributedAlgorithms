@@ -13,7 +13,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     private final int ID;
     private List<ProcessInterface> neighborList = new ArrayList<ProcessInterface>();
     private List<MessageBuffer> bufferMessage = new ArrayList<MessageBuffer>();
-    private List<MessageBuffer> bufferAck = new ArrayList<MessageBuffer>();
+    private List<String> bufferAck = new ArrayList<String>();
     private String deliveredMessage = "";
 
     public Process(int id) throws RemoteException {
@@ -21,43 +21,57 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     }
 
     @Override
-    public void receviveMessage(String message, long timestamp) throws RemoteException {
-        System.out.println("I'm: " + this.toString() + " and i just recevived: " + message + " with timestamp: " + timestamp);
+    public void receviveMessage(String message, int id_sender, int timestamp) throws RemoteException {
+        System.out.println("I'm: " + ID + " and i just recevived: " + message + " with timestamp: " + timestamp + " form: " + id_sender);
 
         synchronized (this) {
             //Put the message in a waiting list
-            bufferMessage.add(new MessageBuffer(message, timestamp));
+            bufferMessage.add(new MessageBuffer(message, id_sender, timestamp));
         }
 
         //Send ack to all process
         long timestampAck = System.currentTimeMillis() / 1000l;
         for (ProcessInterface p : neighborList) {
-            p.receviveAck(message, timestampAck);
+            p.receviveAck(message, ID);
         }
     }
 
     @Override
-    public void receviveAck(String message, long timestamp) throws RemoteException {
-        System.out.println("Ack receviced by: " + this.toString());
+    public void receviveAck(String message, int id_sender) throws RemoteException {
+        System.out.println("Ack receviced by: " + ID + " and sended by: " + id_sender);
 
         synchronized (this) {
-            bufferAck.add(new MessageBuffer(message, timestamp));
+            bufferAck.add(message);
         }
         checkMessageDelivery();
     }
 
     private void checkMessageDelivery() throws RemoteException {
-        long maxTimestamp = 0;
 
+        int minTimestamp = bufferMessage.get(0).timestamp;
         for (MessageBuffer message : bufferMessage) {
-            if (message.timestamp > maxTimestamp) {
-                maxTimestamp = message.timestamp;
+            if (message.timestamp < minTimestamp) {
+                minTimestamp = message.timestamp;
             }
+        }
+
+        int countEqualTimestamp = 0;
+        for (MessageBuffer message : bufferMessage) {
+            if (message.timestamp == minTimestamp) {
+                countEqualTimestamp++;
+            }
+        }
+
+        if (countEqualTimestamp == 1) {
+            //There is only one message arived at this time
+
+        } else {
+            //There are two message arrived at the same time (smalles time ever)
         }
 
         for (int i = 0; i < bufferMessage.size(); i++) {
             //All the ack has been recived and is the oldest message, if yes deliver the message
-            if (bufferMessage.get(i).timestamp == maxTimestamp) {
+            if (bufferMessage.get(i).timestamp == minTimestamp) {
                 if (getAckNumber(bufferMessage.get(i).message) == neighborList.size()) {
                     System.out.println("Message delivered by: " + this.toString());
                     deliveredMessage = bufferMessage.get(i).message;
