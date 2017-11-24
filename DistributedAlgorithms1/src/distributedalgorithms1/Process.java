@@ -11,10 +11,11 @@ import java.util.logging.Logger;
 public class Process extends UnicastRemoteObject implements ProcessInterface {
 
     private final int ID;
+    private int timestamp = 0;
     private List<ProcessInterface> neighborList = new ArrayList<ProcessInterface>();
     private List<MessageBuffer> bufferMessage = new ArrayList<MessageBuffer>();
     private List<String> bufferAck = new ArrayList<String>();
-    private String deliveredMessage = "";
+    private List<String> deliveredMessage = new ArrayList<String>();
 
     public Process(int id) throws RemoteException {
         this.ID = id;
@@ -30,9 +31,22 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
         }
 
         //Send ack to all process
+        Random rand = new Random();
         long timestampAck = System.currentTimeMillis() / 1000l;
         for (ProcessInterface p : neighborList) {
-            p.receviveAck(message, ID);
+            new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(rand.nextInt(200) + 10);
+                        p.receviveAck(message, ID);
+
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }).start();
         }
     }
 
@@ -47,37 +61,77 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     }
 
     private void checkMessageDelivery() throws RemoteException {
-
-        int minTimestamp = bufferMessage.get(0).timestamp;
-        for (MessageBuffer message : bufferMessage) {
-            if (message.timestamp < minTimestamp) {
-                minTimestamp = message.timestamp;
-            }
-        }
-
-        int countEqualTimestamp = 0;
-        for (MessageBuffer message : bufferMessage) {
-            if (message.timestamp == minTimestamp) {
-                countEqualTimestamp++;
-            }
-        }
-
-        if (countEqualTimestamp == 1) {
-            //There is only one message arived at this time
-
-        } else {
-            //There are two message arrived at the same time (smalles time ever)
-        }
-
-        for (int i = 0; i < bufferMessage.size(); i++) {
-            //All the ack has been recived and is the oldest message, if yes deliver the message
-            if (bufferMessage.get(i).timestamp == minTimestamp) {
-                if (getAckNumber(bufferMessage.get(i).message) == neighborList.size()) {
-                    System.out.println("Message delivered by: " + this.toString());
-                    deliveredMessage = bufferMessage.get(i).message;
-                    bufferMessage.remove(i);
-                    //Extra TODO remove the ack
+        if (bufferMessage.size() > 0) {
+            //Find the min absolute timestamp in the buffer
+            int minTimestamp = bufferMessage.get(0).timestamp;
+            for (MessageBuffer message : bufferMessage) {
+                if (message.timestamp < minTimestamp) {
+                    minTimestamp = message.timestamp;
                 }
+            }
+
+            //Check if there are multiple message with the min timestamp
+            int countEqualTimestamp = 0;
+            int minProcId = 0;
+            for (MessageBuffer message : bufferMessage) {
+                if (message.timestamp == minTimestamp) {
+                    if (minProcId == 0) {
+                        minProcId = message.id_sender;
+                    } else if (message.id_sender < minProcId) {
+                        minProcId = message.id_sender;
+                    }
+                    countEqualTimestamp++;
+                }
+            }
+
+            for (MessageBuffer message : bufferMessage) {
+                if (message.timestamp == minTimestamp && message.id_sender == minProcId) {
+                    if (getAckNumber(message.message) == neighborList.size()) {
+                        //Deliver message and cancel buffers
+                        System.out.println("Message: " + message.message + " delivered by: " + getID());
+                        deliveredMessage.add(message.message);
+                        cancelMessageLog(message.message);
+                        if (checkIfThereAreOtherMessageReadyToDelivery()) {
+                            checkMessageDelivery();
+                        }
+                        break;
+                    }
+                }
+            }
+
+        }
+    }
+
+    private boolean checkIfThereAreOtherMessageReadyToDelivery() throws RemoteException {
+        boolean other = false;
+        if (bufferMessage.size() > 0) {
+            int minTimestamp = bufferMessage.get(0).timestamp;
+            for (MessageBuffer message : bufferMessage) {
+                if (message.timestamp < minTimestamp) {
+                    minTimestamp = message.timestamp;
+                }
+            }
+
+            for (MessageBuffer message : bufferMessage) {
+                if (getAckNumber(message.message) == neighborList.size() && message.timestamp == minTimestamp) {
+                    other = true;
+                }
+            }
+
+        }
+        return other;
+    }
+
+    private void cancelMessageLog(String message) {
+        for (int i = 0; i < bufferMessage.size(); i++) {
+            if (bufferMessage.get(i).message.compareTo(message) == 0) {
+                bufferMessage.remove(i);
+            }
+        }
+
+        for (int i = 0; i < bufferAck.size(); i++) {
+            if (bufferAck.get(i).compareTo(message) == 0) {
+                bufferAck.remove(i);
             }
         }
     }
@@ -85,8 +139,8 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     @Override
     public int getAckNumber(String message) throws RemoteException {
         int counter = 0;
-        for (MessageBuffer ack : bufferAck) {
-            if (ack.message.compareTo(message) == 0) {
+        for (String ack : bufferAck) {
+            if (ack.compareTo(message) == 0) {
                 counter++;
             }
         }
@@ -101,24 +155,10 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     @Override
     public void broadcast(String message) throws RemoteException {
         System.out.println("Message broadcasted by: " + this.toString());
-        Random rand = new Random();
+        timestamp++;
 
-        long timestamp = System.currentTimeMillis() / 1000l;
         for (ProcessInterface p : neighborList) {
-
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(rand.nextInt(200) + 10);
-                        p.receviveMessage(message, timestamp);
-                    } catch (RemoteException ex) {
-                        Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }).start();
-
+            p.receviveMessage(message, getID(), timestamp);
         }
     }
 
@@ -139,7 +179,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     }
 
     @Override
-    public String getDeliveredMessage() throws RemoteException {
+    public List<String> getDeliveredMessage() throws RemoteException {
         return deliveredMessage;
     }
 

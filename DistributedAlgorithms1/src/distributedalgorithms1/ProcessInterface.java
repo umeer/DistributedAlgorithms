@@ -21,7 +21,7 @@ public interface ProcessInterface extends Remote {
     //Testing ones
     public int getID() throws RemoteException;
 
-    public String getDeliveredMessage() throws RemoteException;
+    public List<String> getDeliveredMessage() throws RemoteException;
 
     public int getAckNumber(String message) throws RemoteException;
 
