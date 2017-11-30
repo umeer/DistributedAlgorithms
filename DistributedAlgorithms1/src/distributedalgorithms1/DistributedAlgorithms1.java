@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  In this program there is implemented the total global ordering message, you have to run "DistributedAlghorithm2" and "DistributedAlgorithm3" first and than this file here.
+ *  In this program there is implemented the total global ordering message, you have to run "DistributedAlghorithm2" and "DistributedAlgorithm3" first and than "DistributedAlghorithm1".
  *  A process start the the broadcasting by sending a message to all the process, a process which get the message send to all it's neighbor the ACK and wait for the ACK from
  *  all it's neighbor, a message is considered delivered only when all the ACK for it has been received from all the neighbor.
  * 

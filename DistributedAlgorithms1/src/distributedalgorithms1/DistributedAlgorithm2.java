@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package distributedalgorithms1;
 
 import java.net.MalformedURLException;
@@ -10,14 +5,14 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 
 /**
- *
- * @author Thinkpad
+ *  In this program there is implemented the total global ordering message, you have to run "DistributedAlghorithm2" and "DistributedAlgorithm3" first and than "DistributedAlghorithm1".
+ *  A process start the the broadcasting by sending a message to all the process, a process which get the message send to all it's neighbor the ACK and wait for the ACK from
+ *  all it's neighbor, a message is considered delivered only when all the ACK for it has been received from all the neighbor.
+ * 
  */
+
 public class DistributedAlgorithm2 {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) throws RemoteException, MalformedURLException {
         //Setting up RMI
         try {
