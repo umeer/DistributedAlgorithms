@@ -25,7 +25,9 @@ public class DistributedAlgorithm2 {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException, InterruptedException {
-        final int NUMBER_OF_COMPONENT = 3;
+       
+        Random rand = new Random();
+        final int NUMBER_OF_COMPONENT = 30;
 
         //Setting up RMI
         try {
@@ -61,7 +63,6 @@ public class DistributedAlgorithm2 {
         
         
         
-        Random rand = new Random();
 
         //Broadcast a message
         new Thread(new Runnable() {
@@ -100,7 +101,7 @@ public class DistributedAlgorithm2 {
         
 
         System.out.println(" main end ");
-        //System.exit(0);
+        //System.exit(0); //Can be used the system is async
 
     }
 

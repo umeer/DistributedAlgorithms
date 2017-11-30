@@ -75,5 +75,10 @@ public class ComponentTest {
 //        assertTrue(deliveredMessage.get(1).compareTo("Ciao2") == 0);
 //        assertTrue(deliveredMessage.get(2).compareTo("Ciao3") == 0);
 
+
+
+
+
+
     }
 }

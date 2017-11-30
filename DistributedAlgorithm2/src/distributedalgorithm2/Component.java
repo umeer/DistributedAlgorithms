@@ -35,8 +35,6 @@ public class Component extends UnicastRemoteObject implements ProcessInterface {
         this.ID = id;
     }
 
-    
-    
     @Override
     public List<String> getStatusProcess() throws RemoteException {
         return stateProcess;
@@ -156,7 +154,7 @@ public class Component extends UnicastRemoteObject implements ProcessInterface {
             }
         }
 
-        System.out.println("I'm: " + ID + " and I'm saving this message: " + message + " from: " + id_sender);
+        System.out.println("I'm: " + ID + " and I'm saving this message: " + message + " as status for channel: " + ID + "-" + id_sender);
         stateChannel.add(new MessageBuffer(message, id_sender, 0));
         return 1;
     }
