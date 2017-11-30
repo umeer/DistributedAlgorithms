@@ -35,6 +35,10 @@ public class DistributedAlgorithm2 {
         }
         System.setProperty(("java.rmi.server.hostname"), "127.0.0.1");
 
+        
+        
+        
+        
         List<ProcessInterface> processList = new ArrayList<ProcessInterface>();
         for (int i = 1; i < NUMBER_OF_COMPONENT + 1; i++) {
             //Creation of process
@@ -44,31 +48,22 @@ public class DistributedAlgorithm2 {
             processList.add((ProcessInterface) Naming.lookup("rmi://localhost:1101/" + (i)));
         }
 
-//        //Setting up network of process
-//        Naming.rebind("rmi://localhost:1101/p1", new Component(1));
-//        //Naming.rebind("rmi://localhost:1100/p2", new Process("p2"));
-//        //Naming.rebind("rmi://localhost:1100/p3", new Process("p3"));
-//
-//        List<ProcessInterface> processList = new ArrayList<ProcessInterface>();
-//        processList.add((ProcessInterface) Naming.lookup("rmi://localhost:1101/p1"));
-//        processList.add((ProcessInterface) Naming.lookup("rmi://localhost:1102/p2"));
-//        processList.add((ProcessInterface) Naming.lookup("rmi://localhost:1103/p3"));
+        //Acknolege each process of the existance of other process
         for (ProcessInterface p : processList) {
             p.setNeighbor(processList);
-            //System.out.println("Hi i'm process: " + p.getID());
         }
 
-//        //Start comunication
-//        processList.get(0).broadcast("Ciao");
-//        processList.get(0).broadcast("Ciao2");
-//        processList.get(0).broadcast("Ciao3");
-        //Thread.sleep(3000);
-        //List<String> deliveredMessage = processList.get(0).getDeliveredMessage();
-//        for (String message : deliveredMessage) {
-//            System.out.println("I recevive: " + message);
-//        }
+        
+        
+        
+        
+        
+        
+        
+        
         Random rand = new Random();
 
+        //Broadcast a message
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -81,7 +76,10 @@ public class DistributedAlgorithm2 {
         }).start();
         
         
+        
+        
 
+        //Run a status collection procedure
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -96,6 +94,10 @@ public class DistributedAlgorithm2 {
                 }
             }
         }).start();
+        
+        
+        
+        
 
         System.out.println(" main end ");
         //System.exit(0);
