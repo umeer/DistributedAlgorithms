@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface ProcessInterface extends Remote {
 
+    public List<String>  getStatusProcess() throws RemoteException;
+
+    public List<MessageBuffer> getStatusChannel() throws RemoteException;
+
     public void startStatusLogSequence() throws RemoteException;
 
     public void receviveMessage(String message, int id_sender, int timestamp) throws RemoteException;

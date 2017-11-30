@@ -35,6 +35,18 @@ public class Component extends UnicastRemoteObject implements ProcessInterface {
         this.ID = id;
     }
 
+    
+    
+    @Override
+    public List<String> getStatusProcess() throws RemoteException {
+        return stateProcess;
+    }
+
+    @Override
+    public List<MessageBuffer> getStatusChannel() throws RemoteException {
+        return stateChannel;
+    }
+
     @Override
     public void startStatusLogSequence() throws RemoteException {
         System.out.println("I'm: " + ID + " and I'm starting the status collection system");
