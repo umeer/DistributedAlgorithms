@@ -15,7 +15,7 @@ import java.util.logging.Logger;
      * In this program there are multiple process(NUMBER_OF_COMPONET) that are connected each other, a process starts a
      * broadcasting a message (total ordering message) and another one starts the status collection algh Chandy-Lamport.
      * The process status are all the message correctly delivered (all the ACK have been received) and the channel status 
-     * is the the sequence of message on a channel transmitted between two marker (the ack are considered as message by the algh)
+     * is the the sequence of message on a channel transmitted between two marker (the ack are considered as message by the algh).
      */
 
 
