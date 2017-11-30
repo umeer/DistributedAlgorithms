@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package distributedalgorithm2;
 
 import java.net.MalformedURLException;
@@ -15,15 +11,16 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Thinkpad
- */
+ /**
+     * In this program there are multiple process(NUMBER_OF_COMPONET) that are connected each other, a process starts a
+     * broadcasting a message (total ordering message) and another one starts the status collection algh Chandy-Lamport.
+     * The process status are all the message correctly delivered (all the ACK have been received) and the channel status 
+     * is the the sequence of message on a channel transmitted between two marker (the ack are considered as message by the algh)
+     */
+
+
 public class DistributedAlgorithm2 {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) throws RemoteException, MalformedURLException, NotBoundException, InterruptedException {
        
         Random rand = new Random();
