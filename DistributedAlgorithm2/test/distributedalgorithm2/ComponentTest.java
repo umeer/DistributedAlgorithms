@@ -31,6 +31,11 @@ public class ComponentTest {
 
     @Test
     public void testBroadcast() throws Exception {
+        
+        
+        //Collect all the input message from a process in order and check if the status if correctly collected
+        
+        
 //        //Setting up RMI
 //        try {
 //            java.rmi.registry.LocateRegistry.createRegistry(1101);
