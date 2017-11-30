@@ -79,6 +79,8 @@ public class DistributedAlgorithm2 {
                 }
             }
         }).start();
+        
+        
 
         new Thread(new Runnable() {
             public void run() {
