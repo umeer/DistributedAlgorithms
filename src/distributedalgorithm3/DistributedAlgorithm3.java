@@ -11,9 +11,7 @@ package distributedalgorithm3;
  */
 public class DistributedAlgorithm3 {
 
-    /**
-     * @param args the command line arguments
-     */
+
     public static void main(String[] args) {
         // TODO code application logic here
     }
