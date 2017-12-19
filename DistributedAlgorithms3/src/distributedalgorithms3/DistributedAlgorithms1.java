@@ -8,9 +8,10 @@ import java.rmi.RemoteException;
  * In this program there is implemented the Afek and Gafni async election
  * system, you have to run "DistributedAlghorithm1" and "DistributedAlgorithm2"
  * first and than "DistributedAlghorithm3". You can select how many process
- * there are in the network form the "DistributedAlghorithm3" file. The process
- * can be candidate or ordinary, the ordinary process wont compete in the
- * election race. You can set this value during the process creation.
+ * there are in the network form the "DistributedAlghorithm3" file by changing
+ * NUMBER_OF_PROCESS. The process can be candidate or ordinary, the ordinary
+ * process wont compete in the election race. You can set this value during the
+ * process creation.
  *
  */
 public class DistributedAlgorithms1 {
